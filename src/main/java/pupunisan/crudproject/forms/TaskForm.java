@@ -270,6 +270,39 @@ public class TaskForm extends javax.swing.JFrame {
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
+        int row = tblTask.getSelectedRow();
+    if (row == -1) {
+        JOptionPane.showMessageDialog(this, "Select a task to update.");
+        return;
+    }
+
+    int id = (int) tblTask.getValueAt(row, 0);
+
+    TaskEntity task = new TaskEntity(
+        id,
+        txtTitle.getText(),
+        txtDescription.getText(),
+        txtDueDate.getText(),
+        txtStatus.getText(),
+        checkboxPriority.isSelected()
+    );
+
+    if (!taskUtilities.isValidDate(task.getDueDate())) {
+        JOptionPane.showMessageDialog(this, "Invalid date format (yyyy-MM-dd).");
+        return;
+    }
+
+    try {
+        if (taskController.updateTask(task)) {
+            JOptionPane.showMessageDialog(this, "Task updated!");
+            readTasksToTable();
+            resetFields();
+        } else {
+            JOptionPane.showMessageDialog(this, "Update failed.");
+        }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error updating task: " + e.getMessage());
+    }
 
     }//GEN-LAST:event_btnUpdateActionPerformed
 
